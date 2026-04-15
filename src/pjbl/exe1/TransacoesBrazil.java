@@ -1,4 +1,4 @@
-package pjbl;
+package pjbl.exe1;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -15,25 +15,25 @@ import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 
-public class TransacoesFlow {
+public class TransacoesBrazil {
 
     public static void main(String[] args) throws Exception {
         BasicConfigurator.configure();
 
-        Configuration c = new Configuration();
-        String[] files = new GenericOptionsParser(c, args).getRemainingArgs();
+        Configuration bra = new Configuration();
+        String[] files = new GenericOptionsParser(bra, args).getRemainingArgs();
 
         // entrada
         Path input = new Path("in/operacoes_comerciais_inteira.csv");
 
         // saida (PASTA, não arquivo)
-        Path output = new Path("out_TFlow");
+        Path output = new Path("out_exe1");
 
-        Job j = new Job(c, "TFlow");
+        Job j = new Job(bra, "exe1");
 
-        j.setJarByClass(TransacoesCategory.class);
-        j.setMapperClass(MapFlow.class);
-        j.setReducerClass(ReduceFlow.class);
+        j.setJarByClass(TransacoesBrazil.class);
+        j.setMapperClass(Map.class);
+        j.setReducerClass(Reduce.class);
 
         j.setMapOutputKeyClass(Text.class);
         j.setMapOutputValueClass(IntWritable.class);
@@ -48,31 +48,33 @@ public class TransacoesFlow {
     }
 
     // ================= MAP =================
-    public static class MapFlow extends Mapper<LongWritable, Text, Text, IntWritable> {
+    public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
 
         private final static IntWritable one = new IntWritable(1);
-        private final Text flow = new Text();
+        private final Text brazil = new Text("Brazil");
 
-        public void map(LongWritable key, Text value, Context context)
+        public void map(LongWritable key, Text value, Context con)
                 throws IOException, InterruptedException {
 
             String line = value.toString();
 
+            // Ignorar cabeçalho
             if (line.contains("country_or_area")) return;
 
-            String[] campos = line.split(";");
+            String[] campos = line.split(";", -1);
 
-            if (campos.length < 10) return;
+            if (campos.length < 1) return;
 
-            String flowString = campos[4];
+            String country = campos[0].replace("\"", "").trim();
 
-            flow.set(flowString);
-            context.write(flow, one);
+            if (country.equalsIgnoreCase("Brazil")) {
+                con.write(brazil, one);
+            }
         }
     }
 
     // ================= REDUCE =================
-    public static class ReduceFlow extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
 
         public void reduce(Text key, Iterable<IntWritable> values, Context con)
                 throws IOException, InterruptedException {

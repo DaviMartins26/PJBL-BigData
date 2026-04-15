@@ -25,9 +25,9 @@ public class TransacoesMediaBrazil {
         Path input = new Path("in/operacoes_comerciais_inteira.csv");
 
         // saída
-        Path output = new Path("out_media_brazil");
+        Path output = new Path("out_exe5");
 
-        Job j = new Job(c, "Media Brazil por Ano");
+        Job j = new Job(c, "exe5");
 
         j.setJarByClass(TransacoesMediaBrazil.class);
         j.setMapperClass(MapMedia.class);

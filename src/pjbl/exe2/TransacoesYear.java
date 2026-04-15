@@ -1,4 +1,4 @@
-package pjbl;
+package pjbl.exe2;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -15,25 +15,25 @@ import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 
-public class TransacoesBrazil {
+public class TransacoesYear {
 
     public static void main(String[] args) throws Exception {
         BasicConfigurator.configure();
 
-        Configuration bra = new Configuration();
-        String[] files = new GenericOptionsParser(bra, args).getRemainingArgs();
+        Configuration c = new Configuration();
+        String[] files = new GenericOptionsParser(c, args).getRemainingArgs();
 
         // entrada
         Path input = new Path("in/operacoes_comerciais_inteira.csv");
 
         // saida (PASTA, não arquivo)
-        Path output = new Path("out_brazil");
+        Path output = new Path("out_exe2");
 
-        Job j = new Job(bra, "BrazilCount");
+        Job j = new Job(c, "exe2");
 
-        j.setJarByClass(TransacoesBrazil.class);
-        j.setMapperClass(Map.class);
-        j.setReducerClass(Reduce.class);
+        j.setJarByClass(TransacoesYear.class);
+        j.setMapperClass(MapYear.class);
+        j.setReducerClass(ReduceYear.class);
 
         j.setMapOutputKeyClass(Text.class);
         j.setMapOutputValueClass(IntWritable.class);
@@ -48,33 +48,31 @@ public class TransacoesBrazil {
     }
 
     // ================= MAP =================
-    public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
+    public static class MapYear extends Mapper<LongWritable, Text, Text, IntWritable> {
 
         private final static IntWritable one = new IntWritable(1);
-        private final Text brazil = new Text("Brazil");
+        private final Text ano = new Text();
 
-        public void map(LongWritable key, Text value, Context con)
+        public void map(LongWritable key, Text value, Context context)
                 throws IOException, InterruptedException {
 
             String line = value.toString();
 
-            // Ignorar cabeçalho
             if (line.contains("country_or_area")) return;
 
-            String[] campos = line.split(";", -1);
+            String[] campos = line.split(";");
 
-            if (campos.length < 1) return;
+            if (campos.length < 10) return;
 
-            String country = campos[0].replace("\"", "").trim();
+            String year = campos[1];
 
-            if (country.equalsIgnoreCase("Brazil")) {
-                con.write(brazil, one);
-            }
+            ano.set(year);
+            context.write(ano, one);
         }
     }
 
     // ================= REDUCE =================
-    public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class ReduceYear extends Reducer<Text, IntWritable, Text, IntWritable> {
 
         public void reduce(Text key, Iterable<IntWritable> values, Context con)
                 throws IOException, InterruptedException {

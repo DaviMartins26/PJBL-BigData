@@ -37,8 +37,4 @@ public class MediaWritable implements Writable {
         return count;
     }
 
-    public void add(MediaWritable other) {
-        this.soma += other.soma;
-        this.count += other.count;
-    }
 }

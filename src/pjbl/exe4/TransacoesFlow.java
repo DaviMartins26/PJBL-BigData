@@ -1,4 +1,4 @@
-package pjbl;
+package pjbl.exe4;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -12,10 +12,11 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.log4j.BasicConfigurator;
+import pjbl.exe3.TransacoesCategory;
 
 import java.io.IOException;
 
-public class TransacoesCategory {
+public class TransacoesFlow {
 
     public static void main(String[] args) throws Exception {
         BasicConfigurator.configure();
@@ -27,13 +28,13 @@ public class TransacoesCategory {
         Path input = new Path("in/operacoes_comerciais_inteira.csv");
 
         // saida (PASTA, não arquivo)
-        Path output = new Path("out_TCategory");
+        Path output = new Path("out_exe4");
 
-        Job j = new Job(c, "TCategoty");
+        Job j = new Job(c, "exe4");
 
         j.setJarByClass(TransacoesCategory.class);
-        j.setMapperClass(MapCategoty.class);
-        j.setReducerClass(ReduceCategoria.class);
+        j.setMapperClass(MapFlow.class);
+        j.setReducerClass(ReduceFlow.class);
 
         j.setMapOutputKeyClass(Text.class);
         j.setMapOutputValueClass(IntWritable.class);
@@ -48,10 +49,10 @@ public class TransacoesCategory {
     }
 
     // ================= MAP =================
-    public static class MapCategoty extends Mapper<LongWritable, Text, Text, IntWritable> {
+    public static class MapFlow extends Mapper<LongWritable, Text, Text, IntWritable> {
 
         private final static IntWritable one = new IntWritable(1);
-        private final Text categoty = new Text();
+        private final Text flow = new Text();
 
         public void map(LongWritable key, Text value, Context context)
                 throws IOException, InterruptedException {
@@ -64,15 +65,15 @@ public class TransacoesCategory {
 
             if (campos.length < 10) return;
 
-            String categoria = campos[9];
+            String flowString = campos[4];
 
-            categoty.set(categoria);
-            context.write(categoty, one);
+            flow.set(flowString);
+            context.write(flow, one);
         }
     }
 
     // ================= REDUCE =================
-    public static class ReduceCategoria extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class ReduceFlow extends Reducer<Text, IntWritable, Text, IntWritable> {
 
         public void reduce(Text key, Iterable<IntWritable> values, Context con)
                 throws IOException, InterruptedException {
