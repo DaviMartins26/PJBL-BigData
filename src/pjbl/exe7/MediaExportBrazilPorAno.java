@@ -56,10 +56,13 @@ public class MediaExportBrazilPorAno {
             String[] campos = linha.split(";");
 
             if (campos.length < 10) return;
+            //validacao de campos || = OR
+            if (campos[0].isEmpty() || campos[1].isEmpty() || campos[4].isEmpty() || campos[5].isEmpty()) return;
 
-            String country = campos[0];
+            // .trim() lida com csv não padronizado tipo "Brazil "
+            String country = campos[0].trim();
             String year = campos[1];
-            String flow = campos[4];
+            String flow = campos[4].trim();
 
             double trade;
 
@@ -69,8 +72,8 @@ public class MediaExportBrazilPorAno {
                 return;
             }
 
-            // filtros
-            if (country.equals("Brazil") && flow.equals("Export")) {
+            // filtros  melhorados pra possivel csv sujo
+            if (country.equalsIgnoreCase("Brazil") && flow.equalsIgnoreCase("Export"))
                 con.write(new Text(year), new ExportWritable(trade, 1));
             }
         }
@@ -107,7 +110,8 @@ public class MediaExportBrazilPorAno {
                 somaTotal += v.getSoma();
                 countTotal += v.getCount();
             }
-
+            //garante que não vai ter uma divizão por 0
+            if (countTotal == 0) return;
             double media = somaTotal / countTotal;
 
             con.write(key, new DoubleWritable(media));

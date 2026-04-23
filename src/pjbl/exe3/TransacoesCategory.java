@@ -63,7 +63,8 @@ public class TransacoesCategory {
             String[] campos = line.split(";");
 
             if (campos.length < 10) return;
-
+            //validacao de campo corrigido
+            if (campos[9].isEmpty()) return;
             String categoria = campos[9];
 
             categoty.set(categoria);

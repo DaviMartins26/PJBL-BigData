@@ -63,7 +63,8 @@ public class TransacoesYear {
             String[] campos = line.split(";");
 
             if (campos.length < 10) return;
-
+            // validacao de campo corrigida
+            if (campos[1].isEmpty()) return;
             String year = campos[1];
 
             ano.set(year);

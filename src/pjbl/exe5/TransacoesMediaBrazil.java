@@ -39,7 +39,8 @@ public class TransacoesMediaBrazil {
 
         // saída final
         j.setOutputKeyClass(Text.class);
-        j.setOutputValueClass(Text.class);
+        //Escrever o tipo de cado corretamente
+        j.setOutputValueClass(DoubleWritable.class);
 
         FileInputFormat.addInputPath(j, input);
         FileOutputFormat.setOutputPath(j, output);
@@ -63,6 +64,8 @@ public class TransacoesMediaBrazil {
             String[] campos = line.split(";");
 
             if (campos.length < 10) return;
+            //correção verificacao -- || = OR
+            if (campos[0].isEmpty() || campos[1].isEmpty() || campos[5].isEmpty()) return;
 
             String country = campos[0];
             String year = campos[1];

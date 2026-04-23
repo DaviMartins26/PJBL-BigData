@@ -58,6 +58,8 @@ public class TransacoesMinMaxBrazil2016 {
             String[] campos = linha.split(";");
 
             if (campos.length < 10) return;
+            //validacao correto dos campos
+            if (campos[0].isEmpty() || campos[1].isEmpty() || campos[5].isEmpty()) return;
 
             String country = campos[0];
             String year = campos[1];
@@ -66,7 +68,13 @@ public class TransacoesMinMaxBrazil2016 {
             if (!year.equals("2016")) return;
 
             //parseDouble converte String em double
-            double valor = Double.parseDouble(campos[5]);
+            double valor;
+            // validação pra não qiebrar o double caso tenha algum valor não double
+            try {
+                valor = Double.parseDouble(campos[5]);
+            } catch (Exception e) {
+                return;
+            }
 
             //con.write(new Text("Brazil-2016"), new MinMaxWritable(valor, valor));
             con.write(new Text(year),new MinMaxWritable(valor,valor));

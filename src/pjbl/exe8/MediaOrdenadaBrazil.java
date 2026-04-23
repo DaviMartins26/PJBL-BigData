@@ -164,7 +164,12 @@ public class MediaOrdenadaBrazil {
             String[] partes = value.toString().split("\t");
 
             String ano = partes[0];
-            double media = Double.parseDouble(partes[1]);
+            double media; // protecão contra dado não double
+            try {
+                media = Double.parseDouble(partes[1]);
+            } catch (Exception e) {
+                return;
+            }
 
             //Menor pra maior com defeitos
             con.write(new DoubleWritable(media), new Text(ano));

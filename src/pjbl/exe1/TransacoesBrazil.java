@@ -63,7 +63,8 @@ public class TransacoesBrazil {
 
             String[] campos = line.split(";", -1);
 
-            if (campos.length < 1) return;
+            // coreções de validação de valores
+            if (campos.length < 1 || campos[0].isEmpty()) return;
 
             String country = campos[0].replace("\"", "").trim();
 

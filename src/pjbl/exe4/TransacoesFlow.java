@@ -31,8 +31,8 @@ public class TransacoesFlow {
         Path output = new Path("out_exe4");
 
         Job j = new Job(c, "exe4");
-
-        j.setJarByClass(TransacoesCategory.class);
+        // Estava chamando a classe errada, mas por algum motivo o resultado estava correto
+        j.setJarByClass(TransacoesFlow.class);
         j.setMapperClass(MapFlow.class);
         j.setReducerClass(ReduceFlow.class);
 
@@ -64,7 +64,8 @@ public class TransacoesFlow {
             String[] campos = line.split(";");
 
             if (campos.length < 10) return;
-
+            //validacao de campo corrigido
+            if (campos[4].isEmpty()) return;
             String flowString = campos[4];
 
             flow.set(flowString);
