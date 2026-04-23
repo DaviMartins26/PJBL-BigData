@@ -68,7 +68,8 @@ public class TransacoesMinMaxBrazil2016 {
             //parseDouble converte String em double
             double valor = Double.parseDouble(campos[5]);
 
-            con.write(new Text("Brazil-2016"), new MinMaxWritable(valor, valor));
+            //con.write(new Text("Brazil-2016"), new MinMaxWritable(valor, valor));
+            con.write(new Text(year),new MinMaxWritable(valor,valor));
         }
     }
 

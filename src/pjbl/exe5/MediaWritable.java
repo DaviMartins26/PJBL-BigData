@@ -37,4 +37,11 @@ public class MediaWritable implements Writable {
         return count;
     }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void setSoma(double soma) {
+        this.soma = soma;
+    }
 }
