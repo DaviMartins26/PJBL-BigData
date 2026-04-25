@@ -76,7 +76,7 @@ public class MediaExportBrazilPorAno {
             if (country.equalsIgnoreCase("Brazil") && flow.equalsIgnoreCase("Export"))
                 con.write(new Text(year), new ExportWritable(trade, 1));
             }
-        }
+
     }
 
     // ================= COMBINER =================
